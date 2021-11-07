@@ -1,0 +1,15 @@
+Integer: 8
+Operator or Separator: ;
+Identifier: abc
+Erroneous token: _
+Erroneous token: _
+Identifier: dd_8
+Operator or Separator: ;
+Identifier: zz
+Erroneous token: a_1a
+End-of-file pseudo-token: <EoF>
+# Wieso ist das hier ein richtig guter Kommentar ? #
+Integer: 5
+# und das hier etwas anderes ?,
+# weil Peterzwegat deine Mum gebumst hat.
+# ayex
