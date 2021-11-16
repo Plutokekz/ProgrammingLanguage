@@ -84,7 +84,7 @@ class Lexer:
         return self
 
     def __next__(self):
-        t = lexer.get_next_token()
+        t = self.get_next_token()
         if self.done:
             raise StopIteration
         if t.type == Token.EoF:
