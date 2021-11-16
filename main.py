@@ -1,4 +1,5 @@
 from enum import Enum
+from collections import namedtuple
 
 UNDERSCORE = '_'
 NEWLINE = '\n'
@@ -12,9 +13,14 @@ class Token(Enum):
     EoF = 0
     IDENTIFIER = 1
     INTEGER = 2
+    FLOAT = 6
     ERRONEOUS = 3
     OPERATOR = 4
     SEPARATOR = 5
+    MULTIPLY = 7
+    DIVISION = 8
+    ADDITION = 9
+    SUBTRACTION = 10
 
 
 class PositionInFile:
@@ -37,12 +43,12 @@ class TokenType:
     position_in_file: PositionInFile
 
     def __init__(self, _type, _repr, position_in_file):
-        self.type = _type
+        self.token_type = _type
         self._repr = _repr
         self.position_in_file = position_in_file
 
     def __repr__(self):
-        return f"TokenType(type: {self.type}, repr: <{self._repr}>, position: {self.position_in_file})"
+        return f"TokenType(type: {self.token_type}, repr: <{self._repr}>, position: {self.position_in_file})"
 
 
 class Lexer:
@@ -191,9 +197,75 @@ class Lexer:
         return _token
 
 
-"""CREATE TABLE """
+# Parser from grammar
+# Grammar:
+# expression: term | unary-operator term | term binary-operator term
+# term: NUMBER
+# unary-operator: '-'
+# binary-operator: '-+*/'
+# NUMBER: '0123456789'
+
+class NodeNumber:
+
+    def __init__(self, token):
+        self.token = token
+
+    def __repr__(self):
+        return f"NodeNumber(token: {self.token})"
+
+
+class NodeBinaryOperation:
+
+    def __init__(self, left_node, operation_token, right_node):
+        self.left_node = left_node
+        self.right_node = right_node
+        self.operation_token = operation_token
+
+    def __repr__(self):
+        return f"NodeBinaryOperation(left: {self.left_node}, operation: {self.operation_token}, right: {self.right_node})"
+
+
+class Parser:
+
+    def __init__(self, tokens):
+        self.tokens = tokens
+        self.token_index = -1
+        self.current_token = None
+        self.advance()
+
+    def advance(self):
+        self.token_index += 1
+        if self.token_index < len(self.tokens):
+            self.current_token = self.tokens[self.token_index]
+        return self.current_token
+
+    def parse(self):
+        return self.expression()
+
+    def factor(self):
+        if self.current_token.token_type in (Token.INTEGER, Token.FLOAT):
+            token = self.current_token
+            self.advance()
+            return NodeNumber(token)
+
+    def term(self):
+        return self._operation(self.factor, (Token.MULTIPLY, Token.DIVISION))
+
+    def _operation(self, func, token_types):
+        left = func()
+        while self.current_token.token_type in token_types:
+            operation_token = self.current_token
+            self.advance()
+            right = func()
+            left = NodeBinaryOperation(left, operation_token, right)
+        return left
+
+    def expression(self):
+        return self._operation(self.term, (Token.ADDITION, Token.SUBTRACTION))
+
 
 if __name__ == "__main__":
-    lexer = Lexer("input.txt")
-    for token in lexer:
-        print(token)
+    tokens = [TokenType(Token.INTEGER, "1", None), TokenType(Token.ADDITION, "+", None),
+              TokenType(Token.INTEGER, "2", None)]
+    parser = Parser(tokens)
+    print(parser.parse())
