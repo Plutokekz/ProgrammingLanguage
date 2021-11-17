@@ -1,4 +1,5 @@
-import Lexer
+from Lexer import Token, TokenInfo
+
 
 class NodeNumber:
 
@@ -38,7 +39,7 @@ class Parser:
         return self.expression()
 
     def factor(self):
-        if self.current_token.token_type in (Token.INTEGER, Token.FLOAT):
+        if self.current_token.type in (Token.INTEGER, Token.FLOAT):
             token = self.current_token
             self.advance()
             return NodeNumber(token)
@@ -48,7 +49,7 @@ class Parser:
 
     def _operation(self, func, token_types):
         left = func()
-        while self.current_token.token_type in token_types:
+        while self.current_token.type in token_types:
             operation_token = self.current_token
             self.advance()
             right = func()
@@ -60,8 +61,8 @@ class Parser:
 
 
 if __name__ == "__main__":
-    tokens = [TokenType(Token.INTEGER, "1", None), TokenType(Token.ADDITION, "+", None),
-              TokenType(Token.INTEGER, "2", None), TokenType(Token.MULTIPLY, "*", None),
-              TokenType(Token.INTEGER, "3", None)]
+    tokens = [TokenInfo(Token.INTEGER, "1", None), TokenInfo(Token.ADDITION, "+", None),
+              TokenInfo(Token.INTEGER, "2", None), TokenInfo(Token.MULTIPLY, "*", None),
+              TokenInfo(Token.INTEGER, "3", None)]
     parser = Parser(tokens)
     print(parser.parse())

@@ -22,14 +22,22 @@ class Lex:
     input_char = None
     tokenList = []
 
+    def __init__(self, file_name):
+        self.file_name = file_name
+        self.start_lex()
+
     def get_input(self, file_name):
         with open(file_name, 'r') as file:
             self.myInput = file.read().replace('\n', ' ')
 
     def start_lex(self):
-        self.get_input("input.txt")
+        self.get_input(self.file_name)
         self.dot = 0
         self.input_char = self.myInput[self.dot]
+
+    def lex(self):
+        while self.input_char != "EOF":
+            self.identify_token()
 
     def get_next_char(self):
         try:
@@ -77,8 +85,9 @@ class Lex:
         if self.input_char == "EOF":
             self.tokenList.append(TokenInfo(Token.EOF, "EOF", start_dot))
 
+
 if __name__ == "__main__":
-    lex = Lex()
+    lex = Lex("input.txt")
 
     lex.start_lex()
 
