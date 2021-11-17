@@ -1,3 +1,5 @@
+import Lexer
+
 class NodeNumber:
 
     def __init__(self, token):
