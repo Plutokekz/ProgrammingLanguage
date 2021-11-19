@@ -1,3 +1,5 @@
+from pprint import pprint
+
 from Lexer import Token, TokenInfo
 
 
@@ -37,11 +39,18 @@ class InvalidSyntaxError(SyntaxError):
 
 class Parser:
 
-    def __init__(self, tokens):
-        self.tokens = tokens
+    tokens: [Token]
+    token_index: int
+    current_token: Token
+
+    def __init__(self):
+        self.tokens = None
         self.token_index = -1
         self.current_token = None
-        self.advance()
+
+    def reset(self):
+        self.token_index = -1
+        self.current_token = None
 
     def advance(self):
         self.token_index += 1
@@ -49,7 +58,10 @@ class Parser:
             self.current_token = self.tokens[self.token_index]
         return self.current_token
 
-    def parse(self):
+    def parse(self, tokens):
+        self.tokens = tokens
+        self.reset()
+        self.advance()
         result = self.expression()
         if not result.error and self.current_token.type != Token.EOF:
             return result.failure(InvalidSyntaxError(

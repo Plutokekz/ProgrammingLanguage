@@ -24,16 +24,25 @@ class Lex:
     input_char = None
     tokenList = []
 
-    def __init__(self, file_name):
-        self.file_name = file_name
-        self.start_lex()
+    def __init__(self):
+        pass
 
     def get_input(self, file_name):
         with open(file_name, 'r') as file:
             self.myInput = file.read().replace('\n', ' ')
 
+    def lex_file(self, file_name):
+        self.get_input(file_name)
+        self.start_lex()
+        self.lex()
+
+    def lex_string(self, string):
+        self.myInput = string
+        self.start_lex()
+        self.lex()
+
     def start_lex(self):
-        self.get_input(self.file_name)
+        self.tokenList = []
         self.dot = 0
         self.input_char = self.myInput[self.dot]
 
@@ -64,9 +73,9 @@ class Lex:
 
             if self.input_char == ".":
                 input_number += self.get_next_string_of_ints()
-                self.tokenList.append(TokenInfo(Token.FLOAT, input_number, start_dot))
+                self.tokenList.append(TokenInfo(Token.FLOAT, float(input_number), start_dot))
             else:
-                self.tokenList.append(TokenInfo(Token.INTEGER, input_number, start_dot))
+                self.tokenList.append(TokenInfo(Token.INTEGER, int(input_number), start_dot))
 
         elif self.input_char == "+":
             self.tokenList.append(TokenInfo(Token.ADDITION, self.input_char, start_dot))
