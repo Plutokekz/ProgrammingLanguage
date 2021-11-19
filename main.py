@@ -7,4 +7,4 @@ lex.lex()
 tokens = lex.tokenList
 pprint(tokens)
 parser = Parser(tokens)
-pprint(parser.parse())
+pprint(parser.parse().node)

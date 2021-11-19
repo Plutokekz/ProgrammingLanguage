@@ -13,6 +13,8 @@ class Token(Enum):
     DIVISION = "/"
     INVALID = "INV"
     EOF = "EOF"
+    LPAREN = "("
+    RPAREN = ")"
     # EXPRESSION = TERM or UNARYOP + TERM or TERM + BINARYOP + TERM
 
 
@@ -77,6 +79,12 @@ class Lex:
             self.get_next_char()
         elif self.input_char == "/":
             self.tokenList.append(TokenInfo(Token.DIVISION, self.input_char, start_dot))
+            self.get_next_char()
+        elif self.input_char == "(":
+            self.tokenList.append(TokenInfo(Token.LPAREN, self.input_char, start_dot))
+            self.get_next_char()
+        elif self.input_char == ")":
+            self.tokenList.append(TokenInfo(Token.RPAREN, self.input_char, start_dot))
             self.get_next_char()
         else:
             self.tokenList.append(TokenInfo(Token.INVALID, self.input_char, start_dot))
