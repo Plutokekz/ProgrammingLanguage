@@ -1,6 +1,6 @@
 from pprint import pprint
 
-from Interpreter import Interpreter
+from Interpreter import Interpreter, Context
 from Lexer import Lex
 from Parser import Parser
 
@@ -13,4 +13,9 @@ while True:
     tokens = lex.tokenList
     node = parser.parse(tokens).node
     print(node)
-    print(interpreter.visit(node))
+    context = Context('<Calculator>')
+    result = interpreter.visit(node, context)
+    if result.error:
+        print(result.error)
+    else:
+        pprint(result.value)
